@@ -120,15 +120,15 @@ public class JdbcTenmoAccountDao implements TenmoAccountDao {
         }
         BigDecimal senderBalance = getBalanceByTenmoAccountId(senderAccountId);
         BigDecimal recipientBalance = getBalanceByTenmoAccountId(recipientAccountId);
-        BigDecimal amountTransfer = transfer.getAmountTransfer();
-        if (amountTransfer.compareTo(BigDecimal.ZERO) <= 0) {
+        BigDecimal transferAmount = transfer.getTransferAmount();
+        if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new DaoException("Unable to update balances: transfer amount is zero or negative");
         }
-        if (senderBalance.compareTo(amountTransfer) < 0) {
+        if (senderBalance.compareTo(transferAmount) < 0) {
             throw new DaoException("Unable to update balances: sender balance is too low");
         }
-        BigDecimal newSenderBalance = senderBalance.subtract(amountTransfer);
-        BigDecimal newRecipientBalance = recipientBalance.add(amountTransfer);
+        BigDecimal newSenderBalance = senderBalance.subtract(transferAmount);
+        BigDecimal newRecipientBalance = recipientBalance.add(transferAmount);
         senderAccount.setTeBucksBalance(newSenderBalance);
         recipientAccount.setTeBucksBalance(newRecipientBalance);
         try {
