@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.dao.interfaces.UserDao;
 import com.techelevator.tenmo.exception.DaoException;
-import com.techelevator.tenmo.model.dto.RegisterUserDto;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -62,7 +62,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User createUser(User user) {
-
+//TODO: if role is user, call createTenmoAccount
         if (user.getHashedPassword() == null) {
             throw new DaoException("User cannot be created with null password");
         }

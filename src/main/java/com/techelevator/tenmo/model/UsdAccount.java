@@ -5,15 +5,15 @@ import java.math.BigDecimal;
 public class UsdAccount {
 
     private int usdAccountId;
-    private int teAccountId;
+    private int tenmoAccountId;
     private BigDecimal teBucksBalance;
     private int user_id;
 
-    public UsdAccount () {}
+    public UsdAccount() {}
 
     public UsdAccount(int usdAccountId, int teAccountId, BigDecimal teBucksBalance, int user_id) {
         this.usdAccountId = usdAccountId;
-        this.teAccountId = teAccountId;
+        this.tenmoAccountId = teAccountId;
         this.teBucksBalance = teBucksBalance;
         this.user_id = user_id;
     }
@@ -26,12 +26,12 @@ public class UsdAccount {
         this.usdAccountId = usdAccountId;
     }
 
-    public int getTeAccountId() {
-        return teAccountId;
+    public int getTenmoAccountId() {
+        return tenmoAccountId;
     }
 
-    public void setTeAccountId(int teAccountId) {
-        this.teAccountId = teAccountId;
+    public void setTenmoAccountId(int tenmoAccountId) {
+        this.tenmoAccountId = tenmoAccountId;
     }
 
     public BigDecimal getTeBucksBalance() {

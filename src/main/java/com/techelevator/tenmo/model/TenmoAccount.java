@@ -2,26 +2,27 @@ package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
 
-public class TeAccount {
+public class TenmoAccount {
 
-    private int teAccountId;
+    private int tenmoAccountId;
     private int userId;
     private BigDecimal teBucksBalance;
 
-    public TeAccount() {}
 
-    public TeAccount(int teAccountId, int userId, BigDecimal teBucksBalance) {
-        this.teAccountId = teAccountId;
+    public TenmoAccount() {}
+
+    public TenmoAccount(int teAccountId, int userId, BigDecimal teBucksBalance) {
+        this.tenmoAccountId = teAccountId;
         this.userId = userId;
         this.teBucksBalance = teBucksBalance;
     }
 
     public int getTeAccountId() {
-        return teAccountId;
+        return tenmoAccountId;
     }
 
     public void setTeAccountId(int teAccountId) {
-        this.teAccountId = teAccountId;
+        this.tenmoAccountId = teAccountId;
     }
 
     public int getUserId() {

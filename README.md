@@ -138,7 +138,7 @@ To run the application, you must first create the `tenmo` database. Then run the
 
 > Note: The script creates two users for testing, `user` and `admin`, which both have the password: `password`.
 
-![Database schema](./database/tenmo_ERD.drawio.png)
+![Database schema](./database/oldTenmoERD.drawio.png)
 
 ### Datasource
 
