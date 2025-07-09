@@ -6,7 +6,7 @@ public class UsdAccount {
 
     private int usdAccountId;
     private int tenmoAccountId;
-    private BigDecimal teBucksBalance;
+    private BigDecimal usdBucksBalance;
     private int user_id;
 
     public UsdAccount() {}
@@ -14,7 +14,7 @@ public class UsdAccount {
     public UsdAccount(int usdAccountId, int teAccountId, BigDecimal teBucksBalance, int user_id) {
         this.usdAccountId = usdAccountId;
         this.tenmoAccountId = teAccountId;
-        this.teBucksBalance = teBucksBalance;
+        this.usdBucksBalance = teBucksBalance;
         this.user_id = user_id;
     }
 
@@ -34,12 +34,12 @@ public class UsdAccount {
         this.tenmoAccountId = tenmoAccountId;
     }
 
-    public BigDecimal getTeBucksBalance() {
-        return teBucksBalance;
+    public BigDecimal getUsdBucksBalance() {
+        return usdBucksBalance;
     }
 
-    public void setTeBucksBalance(BigDecimal teBucksBalance) {
-        this.teBucksBalance = teBucksBalance;
+    public void setUsdBucksBalance(BigDecimal usdBucksBalance) {
+        this.usdBucksBalance = usdBucksBalance;
     }
 
     public int getUser_id() {

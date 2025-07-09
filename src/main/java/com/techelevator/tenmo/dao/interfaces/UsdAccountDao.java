@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 
 public interface UsdAccountDao {
 
-    UsdAccount createUsdAccount();
+    UsdAccount createUsdAccount(UsdAccount newUsdAccount);
 
-    UsdAccount receiveFunds(BigDecimal conversionAmount);
+    BigDecimal receiveFunds(BigDecimal conversionAmount, int UsdAccountId);
 
-    BigDecimal getUsdAccountBalance(int userId);
+    BigDecimal getUsdAccountBalance(int usdAccountId);
 }
