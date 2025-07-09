@@ -7,7 +7,7 @@ public class Transfer {
     private int transferId;
     private int senderAccountId;
     private int recipientAccountId;
-    private BigDecimal amountTransfer;
+    private BigDecimal transferAmount;
     private String transferStatus;
     private String transferType;
 
@@ -17,7 +17,7 @@ public class Transfer {
         this.transferId = transferId;
         this.senderAccountId = senderAccountId;
         this.recipientAccountId = recipientAccountId;
-        this.amountTransfer = amountTransfer;
+        this.transferAmount = transferAmount;
         this.transferStatus = transferStatus;
         this.transferType = transferType;
     }
@@ -46,12 +46,12 @@ public class Transfer {
         this.recipientAccountId = recipientAccountId;
     }
 
-    public BigDecimal getAmountTransfer() {
-        return amountTransfer;
+    public BigDecimal getTransferAmount() {
+        return transferAmount;
     }
 
-    public void setAmountTransfer(BigDecimal amountTransfer) {
-        this.amountTransfer = amountTransfer;
+    public void setTransferAmount(BigDecimal amountTransfer) {
+        this.transferAmount = transferAmount;
     }
 
     public String getTransferStatus() {

@@ -19,5 +19,5 @@ public interface TransferDao {
 
     Transfer createTransfer(Transfer transfer);
 
-    Transfer updateTransfer(Integer transferId, String newTransferStatus);
+    Transfer updateTransfer(Transfer transfer);
 }
