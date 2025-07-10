@@ -134,6 +134,11 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
+    public List<Transfer> getTransfersByStatusAndUserId(String transferStatus) {
+        return null;
+    }
+
+    @Override
     public Transfer createTransfer(Transfer transfer) {
 
         Transfer newTransfer = null;
