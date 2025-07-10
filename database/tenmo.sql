@@ -25,6 +25,7 @@ CREATE TABLE tenmo_account (
    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES tenmo_user(user_id),
    CONSTRAINT uq_user_id UNIQUE (user_id)
    );
+ALTER TABLE tenmo_account ALTER COLUMN te_bucks_balance SET DEFAULT 1000.00;
 
 CREATE TABLE USD_account (
       USD_account_id INT GENERATED ALWAYS AS IDENTITY,
