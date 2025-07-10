@@ -125,7 +125,12 @@ INSERT INTO transfer (sender_account_id, recipient_account_id, transfer_amount, 
 VALUES
   (1, 2, 150.00, 'Approved', 'Sending'),
   (5, 3, 75.00, 'Pending', 'Request'),
-  (4, 7, 100.00, 'Approved', 'Request');
+  (4, 7, 100.00, 'Approved', 'Request')
+  (6, 3, 15.00, 'Pending', 'Sending'),
+  (2, 1, 100.00, 'Rejected', 'Request'),
+  (3, 1, 50.00, 'Approved', 'Sending'),
+  (3, 1, 85.00, 'Pending', 'Request'),
+  (1, 6, 100.00, 'Pending', 'Request');
 
 
 
