@@ -1,5 +1,9 @@
 package com.techelevator.tenmo.controller;
 
+import com.techelevator.tenmo.dao.interfaces.TenmoAccountDao;
+import com.techelevator.tenmo.dao.interfaces.UsdAccountDao;
+import com.techelevator.tenmo.model.TenmoAccount;
+import com.techelevator.tenmo.model.UsdAccount;
 import jakarta.validation.Valid;
 
 import com.techelevator.tenmo.exception.DaoException;
@@ -17,6 +21,8 @@ import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.jwt.TokenProvider;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+
 /**
  * Controller to authenticate users.
  */
@@ -26,11 +32,16 @@ public class AuthenticationController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserDao userDao;
+    private final TenmoAccountDao tenmoAccountDao;
+    private final UsdAccountDao usdAccountDao;
 
-    public AuthenticationController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserDao userDao) {
+    public AuthenticationController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder,
+                                    UserDao userDao, TenmoAccountDao tenmoAccountDao, UsdAccountDao usdAccountDao) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userDao = userDao;
+        this.tenmoAccountDao = tenmoAccountDao;
+        this.usdAccountDao = usdAccountDao;
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
@@ -68,6 +79,14 @@ public class AuthenticationController {
             }
 
             User user = userDao.createUser(new User(newUser.getUsername(), newUser.getPassword(), newUser.getRole()));
+            if (!user.getRole().equals("ROLE_ADMIN")) {
+                TenmoAccount newTenmoAccount = tenmoAccountDao.createTenmoAccount(user.getId());
+                UsdAccount newUsdAccount = new UsdAccount();
+                newUsdAccount.setTenmoAccountId(newTenmoAccount.getTeAccountId());
+                newUsdAccount.setUsdBucksBalance(BigDecimal.ZERO);
+                newUsdAccount.setUser_id(user.getId());
+                usdAccountDao.createUsdAccount(newUsdAccount);
+            }
             return user;
         }
         catch (DaoException e) {
