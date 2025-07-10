@@ -10,12 +10,13 @@ import com.techelevator.tenmo.model.User;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -133,5 +134,52 @@ public class TransferController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return transfer;
+    }
+
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping(path = "/send")
+    public Transfer createSendingTransfer(@Valid @RequestBody Transfer transfer, Principal principal) {
+        String username = principal.getName();
+        User user = userDao.getUserByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User " + username + " does not exist");
+        }
+        int userId = user.getId();
+        TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(userId);
+        transfer.setSenderAccountId(tenmoAccount.getTeAccountId());
+        transfer.setTransferType("Sending");
+        transfer.setTransferStatus("Approved");
+        Transfer newTransfer = null;
+        try {
+            newTransfer = transferDao.createTransfer(transfer);
+
+        } catch (DaoException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        return newTransfer;
+    }
+
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping(path = "/request")
+    public Transfer createRequestTransfer(@Valid @RequestBody Transfer transfer, Principal principal) {
+        String username = principal.getName();
+        User user = userDao.getUserByUsername(username);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User " + username + " does not exist");
+        }
+        int userId = user.getId();
+        TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(userId);
+        transfer.setRecipientAccountId(tenmoAccount.getTeAccountId());
+        transfer.setTransferType("Request");
+        Transfer newTransfer = null;
+        try {
+            newTransfer = transferDao.createTransfer(transfer);
+
+        } catch (DaoException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+        return newTransfer;
     }
 }
