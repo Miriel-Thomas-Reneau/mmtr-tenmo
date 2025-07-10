@@ -1,9 +1,6 @@
--- database tenmo
-START TRANSACTION;
 
--- *************************************************************************************************
--- Drop all db tables
--- *************************************************************************************************
+BEGIN TRANSACTION;
+
 DROP TABLE IF EXISTS tenmo_user, transfer, tenmo_account, USD_account CASCADE;
 
 
@@ -25,7 +22,6 @@ CREATE TABLE tenmo_account (
    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES tenmo_user(user_id),
    CONSTRAINT uq_user_id UNIQUE (user_id)
    );
-ALTER TABLE tenmo_account ALTER COLUMN te_bucks_balance SET DEFAULT 1000.00;
 
 CREATE TABLE USD_account (
       USD_account_id INT GENERATED ALWAYS AS IDENTITY,
@@ -75,17 +71,6 @@ CREATE TABLE transfer (
     CONSTRAINT chk_transferType CHECK (transfer_type IN ('Sending', 'Request'))
     );
 
-
-
-
--- *************************************************************************************************
--- Insert some sample starting data
--- *************************************************************************************************
-
-
-
-
--- Password for all users is "password"
 INSERT INTO
 	tenmo_user (username, password_hash, role)
 VALUES
@@ -112,7 +97,7 @@ VALUES
     (4, 1000.00),
     (5, 1000.00),
     (8, 1000.00),
-    (9, 1000.00);
+
 
 
 
@@ -132,5 +117,4 @@ VALUES
   (1, 6, 100.00, 'Pending', 'Request');
 
 
-
-COMMIT;
+COMMIT TRANSACTION;

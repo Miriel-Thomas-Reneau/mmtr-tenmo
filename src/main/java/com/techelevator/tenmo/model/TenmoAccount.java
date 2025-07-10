@@ -17,6 +17,11 @@ public class TenmoAccount {
         this.teBucksBalance = teBucksBalance;
     }
 
+    public TenmoAccount(int userId, BigDecimal teBucksBalance) {
+        this.userId = userId;
+        this.teBucksBalance = teBucksBalance;
+    }
+
     public int getTeAccountId() {
         return tenmoAccountId;
     }
