@@ -30,7 +30,7 @@ public class JdbcUsdAccountDao implements UsdAccountDao {
         UsdAccount usdAccount = null;
         String insertUsdAccountSql = "INSERT INTO USD_account" +
                 "(tenmo_account_id,usd_bucks_balance,user_id)" +
-                "VALUES (?,?.?)" +
+                "VALUES (?,?,?)" +
                 "Returning USD_account_id";
         try {
             Integer usdAccountId = jdbcTemplate.queryForObject(insertUsdAccountSql, int.class,

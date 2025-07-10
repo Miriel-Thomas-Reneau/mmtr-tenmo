@@ -137,19 +137,20 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer createTransfer(Transfer transfer) {
 
         Transfer newTransfer = null;
+
         String createTransferSql = "INSERT INTO transfer " +
                 "(sender_account_id, recipient_account_id, transfer_amount, transfer_status, transfer_type) " +
                 "VALUES (?, ?, ?, ?, ?) " +
                 "RETURNING transfer_id;";
 
         try {
-            Integer newTransferId = jdbcTemplate.queryForObject(createTransferSql, int.class, transfer.getSenderAccountId(), transfer.getRecipientAccountId(), transfer.getTransferAmount(), transfer.getTransferStatus(), transfer.getTransferType());
+                Integer newTransferId = jdbcTemplate.queryForObject(createTransferSql, int.class, transfer.getSenderAccountId(), transfer.getRecipientAccountId(), transfer.getTransferAmount(), transfer.getTransferStatus(), transfer.getTransferType());
 
-            newTransfer = getTransferById(newTransferId);
+                newTransfer = getTransferById(newTransferId);
 
-            if(newTransfer.getTransferStatus().equals("Approved")){
-                tenmoAccountDao.updateBalances(newTransfer);
-            }
+                if (newTransfer.getTransferStatus().equals("Approved")) {
+                    tenmoAccountDao.updateBalances(newTransfer);
+                }
 
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
@@ -157,8 +158,7 @@ public class JdbcTransferDao implements TransferDao {
             throw new DaoException("Data integrity violation", e);
         }
 
-
-        return newTransfer;
+       return newTransfer;
     }
 
     @Override
@@ -178,11 +178,12 @@ public class JdbcTransferDao implements TransferDao {
 
         try {
             int transferIdRowCount = jdbcTemplate.queryForObject(transferExistsSql, Integer.class, transferId);
-            if (transferIdRowCount == 0){
+            if (transferIdRowCount == 0) {
                 throw new DaoException("Invalid transfer ID: " + transferId);
             }
+
             int transferIsPendingRowCount = jdbcTemplate.queryForObject(transferIsPendingSql, Integer.class, transferId);
-            if (transferIsPendingRowCount == 0){
+            if (transferIsPendingRowCount == 0) {
                 throw new DaoException("Transfer not pending, cannot be updated");
             }
 
@@ -190,29 +191,30 @@ public class JdbcTransferDao implements TransferDao {
 
             updatedTransfer = getTransferById(transfer.getTransferId());
 
-            if(updatedTransfer.getTransferStatus().equals("Approved")){
+            if (updatedTransfer.getTransferStatus().equals("Approved")) {
                 tenmoAccountDao.updateBalances(updatedTransfer);
             }
 
-        } catch  (CannotGetJdbcConnectionException e) {
+        } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
 
-        return updatedTransfer;
-    }
+            return updatedTransfer;
 
-    private Transfer mapRowToTransfer(SqlRowSet results) {
-        Transfer transfer = new Transfer();
-        transfer.setTransferId(results.getInt("transfer_id"));
-        transfer.setSenderAccountId(results.getInt("sender_account_id"));
-        transfer.setRecipientAccountId(results.getInt("recipient_account_id"));
-        transfer.setTransferAmount(results.getBigDecimal("transfer_amount"));
-        transfer.setTransferStatus(results.getString("transfer_status"));
-        transfer.setTransferType(results.getString("transfer_type"));
+}
+
+private Transfer mapRowToTransfer(SqlRowSet results) {
+    Transfer transfer = new Transfer();
+    transfer.setTransferId(results.getInt("transfer_id"));
+    transfer.setSenderAccountId(results.getInt("sender_account_id"));
+    transfer.setRecipientAccountId(results.getInt("recipient_account_id"));
+    transfer.setTransferAmount(results.getBigDecimal("transfer_amount"));
+    transfer.setTransferStatus(results.getString("transfer_status"));
+    transfer.setTransferType(results.getString("transfer_type"));
 
 
-        return transfer;
-    }
+    return transfer;
+}
 }

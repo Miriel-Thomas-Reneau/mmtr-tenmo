@@ -25,11 +25,12 @@ CREATE TABLE transfer (
     transfer_type VARCHAR(50) NOT NULL,
     CONSTRAINT pk_transfer PRIMARY KEY (transfer_id),
     CONSTRAINT fk_sender FOREIGN KEY (sender_account_id) REFERENCES tenmo_account (tenmo_account_id),
-    CONSTRAINT fk_recipient FOREIGN KEY (recipient_account_id) REFERENCES tenmo_account (tenmo_account_id)
+    CONSTRAINT fk_recipient FOREIGN KEY (recipient_account_id) REFERENCES tenmo_account (tenmo_account_id),
+    CONSTRAINT chk_senderRecipientNotEqual CHECK (recipient_account_id != sender_account_id)
     );
 
 
-   CREATE TABLE tenmo_account (
+CREATE TABLE tenmo_account (
    tenmo_account_id INT GENERATED ALWAYS AS IDENTITY,
    user_id int NOT NULL,
    te_bucks_balance dec NOT NULL,
@@ -37,7 +38,7 @@ CREATE TABLE transfer (
    CONSTRAINT fk_user_id FOREIGN KEY user_id REFERENCES tenmo_user(user_id)
    );
 
-    CREATE TABLE USD_account (
+CREATE TABLE USD_account (
       USD_account_id INT GENERATED ALWAYS AS IDENTITY,
       tenmo_account_id int NOT NULL,
       usd_balance dec NOT NULL,
@@ -50,16 +51,6 @@ CREATE TABLE transfer (
 
 
 
-
-
-
--- *************************************************************************************************
--- Create the tables and constraints
--- *************************************************************************************************
---INT GENERATED ALWAYS AS IDENTITY behaves similarly to SERIAL and creates an auto-incrementing
---integer value on inserting into the table
-
-CREATE TABLE
 
 
 
