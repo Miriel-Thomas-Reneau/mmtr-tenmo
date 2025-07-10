@@ -14,6 +14,8 @@ public interface TenmoAccountDao {
 
     TenmoAccount getTenmoAccountByTenmoAccountId(int tenmoAccountId);
 
+    TenmoAccount getTenmoAccountByUserId(int userId);
+
     BigDecimal getBalanceByUserId(int userId);
 
     BigDecimal getBalanceByTenmoAccountId(int tenmoAccountId);
