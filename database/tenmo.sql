@@ -58,10 +58,6 @@ FOR EACH ROW
 EXECUTE FUNCTION block_admin_accounts();
 
 
-
-CREATE TYPE transfer_status_enum AS ENUM ('Pending', 'Approved', 'Rejected');
-CREATE TYPE transfer_type_enum AS ENUM ('Sending', 'Request');
-
 CREATE TABLE transfer (
     transfer_id INT GENERATED ALWAYS AS IDENTITY,
     sender_account_id int NOT NULL,
@@ -73,7 +69,9 @@ CREATE TABLE transfer (
     CONSTRAINT fk_sender FOREIGN KEY (sender_account_id) REFERENCES tenmo_account (tenmo_account_id),
     CONSTRAINT fk_recipient FOREIGN KEY (recipient_account_id) REFERENCES tenmo_account (tenmo_account_id),
     CONSTRAINT chk_senderRecipientNotEqual CHECK (recipient_account_id != sender_account_id),
-    CONSTRAINT chk_amountPositive CHECK (transfer_amount > 0)
+    CONSTRAINT chk_amountPositive CHECK (transfer_amount > 0),
+    CONSTRAINT chk_transferStatus CHECK (transfer_status IN ('Approved', 'Pending', 'Rejected')),
+    CONSTRAINT chk_transferType CHECK (transfer_type IN ('Sending', 'Request'))
     );
 
 
