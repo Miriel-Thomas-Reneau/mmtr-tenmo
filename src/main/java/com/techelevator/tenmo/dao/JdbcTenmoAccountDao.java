@@ -76,6 +76,23 @@ public class JdbcTenmoAccountDao implements TenmoAccountDao {
     }
 
     @Override
+    public TenmoAccount getTenmoAccountByUserId(int userId) {
+        String sql = "SELECT * " +
+                "FROM tenmo_account " +
+                "WHERE user_id = ?";
+        TenmoAccount tenmoAccount = null;
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            if (results.next()) {
+                tenmoAccount = mapRowToTenmoAccount(results);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        return tenmoAccount;
+    }
+
+    @Override
     public BigDecimal getBalanceByUserId(int userId) {
         String sql = "SELECT te_bucks_balance " +
                 "FROM tenmo_account " +
