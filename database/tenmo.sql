@@ -4,7 +4,7 @@ START TRANSACTION;
 -- *************************************************************************************************
 -- Drop all db tables
 -- *************************************************************************************************
-DROP TABLE IF EXISTS tenmo_user, tenmo_account, transfer, USD_account CASCADE;
+DROP TABLE IF EXISTS tenmo_user, transfer, tenmo_account, USD_account CASCADE;
 
 
 CREATE TABLE tenmo_user (
@@ -13,20 +13,24 @@ CREATE TABLE tenmo_user (
 	password_hash VARCHAR(200) NOT NULL,
 	role VARCHAR(50) NOT NULL,
 	CONSTRAINT pk_user PRIMARY KEY (user_id),
-	CONSTRAINT UQ_username UNIQUE (username),
+	CONSTRAINT UQ_username UNIQUE (username)
 );
+
+CREATE TYPE transfer_status_enum AS ENUM ('Pending', 'Approved', 'Rejected');
+CREATE TYPE transfer_type_enum AS ENUM ('Sending', 'Request');
 
 CREATE TABLE transfer (
     transfer_id INT GENERATED ALWAYS AS IDENTITY,
     sender_account_id int NOT NULL,
     recipient_account_id int NOT NULL,
     transfer_amount DEC NOT NULL,
-    transfer_status VARCHAR(50) NOT NULL,
-    transfer_type VARCHAR(50) NOT NULL,
+    transfer_status transfer_status_enum NOT NULL,
+    transfer_type transfer_type_enum NOT NULL,
     CONSTRAINT pk_transfer PRIMARY KEY (transfer_id),
     CONSTRAINT fk_sender FOREIGN KEY (sender_account_id) REFERENCES tenmo_account (tenmo_account_id),
     CONSTRAINT fk_recipient FOREIGN KEY (recipient_account_id) REFERENCES tenmo_account (tenmo_account_id),
-    CONSTRAINT chk_senderRecipientNotEqual CHECK (recipient_account_id != sender_account_id)
+    CONSTRAINT chk_senderRecipientNotEqual CHECK (recipient_account_id != sender_account_id),
+    CONSTRAINT chk_amountPositive CHECK (transfer_amount > 0)
     );
 
 
@@ -34,8 +38,9 @@ CREATE TABLE tenmo_account (
    tenmo_account_id INT GENERATED ALWAYS AS IDENTITY,
    user_id int NOT NULL,
    te_bucks_balance dec NOT NULL,
-   CONSTRAINT pk_tenmo_account PRIMARY KEY tenmo_account_id
-   CONSTRAINT fk_user_id FOREIGN KEY user_id REFERENCES tenmo_user(user_id)
+   CONSTRAINT pk_tenmo_account PRIMARY KEY (tenmo_account_id),
+   CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES tenmo_user(user_id),
+   CONSTRAINT UQ_user_id UNIQUE (user_id)
    );
 
 CREATE TABLE USD_account (
@@ -43,13 +48,31 @@ CREATE TABLE USD_account (
       tenmo_account_id int NOT NULL,
       usd_balance dec NOT NULL,
       user_id int NOT NULL,
-      CONSTRAINT pk_USD_account PRIMARY KEY USD_account_id,
-      CONSTRAINT fk_user_id FOREIGN KEY user_id REFERENCES tenmo_user(user_id)
-      CONSTRAINT fk_tenmo_account_id FOREIGN KEY tenmo_account_id REFERENCES tenmo_account(tenmo_account_id)
+      CONSTRAINT pk_USD_account PRIMARY KEY (USD_account_id),
+      CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES tenmo_user(user_id),
+      CONSTRAINT fk_tenmo_account_id FOREIGN KEY (tenmo_account_id) REFERENCES tenmo_account(tenmo_account_id),
+      CONSTRAINT UQ_user_id UNIQUE (user_id)
       );
 
+ALTER TABLE USD_account ALTER COLUMN usd_balance SET DEFAULT 0.00;
 
+CREATE OR REPLACE FUNCTION block_admin_accounts()
+RETURNS TRIGGER AS $$
+BEGIN
+   IF EXISTS (
+      SELECT 1 FROM tenmo_user WHERE user_id = NEW.user_id AND role = 'ROLE_ADMIN'
+   ) THEN
+      RAISE EXCEPTION 'Admins are not allowed to have Tenmo accounts.';
+   END IF;
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
+-- 4. Create trigger itself
+CREATE TRIGGER trg_no_admin_accounts
+BEFORE INSERT ON tenmo_account
+FOR EACH ROW
+EXECUTE FUNCTION block_admin_accounts();
 
 
 
@@ -59,11 +82,51 @@ CREATE TABLE USD_account (
 -- *************************************************************************************************
 -- Insert some sample starting data
 -- *************************************************************************************************
--- Password for all users is password
+
+
+
+
+-- Password for all users is "password"
 INSERT INTO
 	tenmo_user (username, password_hash, role)
 VALUES
-	('user','$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem','ROLE_USER'),
-	('admin','$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem','ROLE_ADMIN');
+	('user1', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('user2', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('user3', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('user4', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('user5', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('admin1', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_ADMIN'),
+	('admin2', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_ADMIN'),
+	('johndoe', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('janedoe', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_USER'),
+	('superadmin', '$2a$10$tmxuYYg1f5T0eXsTPlq/V.DJUKmRHyFbJ.o.liI1T35TFbjs2xiem', 'ROLE_ADMIN');
+
+
+
+-- Insert accounts for ROLE_USER users only (default balance: 1000 TE Bucks)
+
+INSERT INTO tenmo_account (user_id, te_bucks_balance)
+VALUES
+    (1, 1000.00),
+    (2, 1000.00),
+    (3, 1000.00),
+    (4, 1000.00),
+    (5, 1000.00),
+    (8, 1000.00),
+    (9, 1000.00);
+
+
+
+INSERT INTO USD_account (tenmo_account_id, user_id)
+VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+
+
+INSERT INTO transfer (sender_account_id, recipient_account_id, transfer_amount, transfer_status, transfer_type)
+VALUES
+  (1, 2, 150.00, 'Approved', 'Sending'),
+  (5, 3, 75.00, 'Pending', 'Request'),
+  (4, 9, 100.00, 'Approved', 'Request');
+
+
 
 COMMIT;
