@@ -76,6 +76,22 @@ public class JdbcUsdAccountDao implements UsdAccountDao {
         return balanceAmount;
     }
 
+    @Override
+    public UsdAccount pullAccountInformation(int user_id) {
+        UsdAccount usdAccount = null;
+        String insertUsdAccountSql = "SELECT * FROM USD_account" +
+                "WHERE user_id = ?";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(insertUsdAccountSql,user_id);
+            if (results.next()) {
+                usdAccount = mapRowToUsdAccount(results);
+            }
+        }catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or data", e);
+        }
+        return usdAccount;
+    }
+
     private UsdAccount mapRowToUsdAccount(SqlRowSet rs) {
         UsdAccount usdAccount = new UsdAccount();
         usdAccount.setUsdAccountId(rs.getInt("USD_account_id"));
