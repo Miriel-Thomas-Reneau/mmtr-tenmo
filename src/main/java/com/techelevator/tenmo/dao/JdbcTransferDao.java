@@ -194,7 +194,7 @@ public class JdbcTransferDao implements TransferDao {
                 "FROM transfer " +
                 "WHERE transfer_id = ? AND transfer_status = 'Pending';";
         String updateSql = "UPDATE transfer " +
-                "SET transfer_status = ?" +
+                "SET transfer_status = ? " +
                 "WHERE transfer_id = ?;";
 
         try {

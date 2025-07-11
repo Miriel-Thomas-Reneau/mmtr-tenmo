@@ -13,7 +13,7 @@ public class Transfer {
 
     public Transfer () {}
 
-    public Transfer(int transferId, int senderAccountId, int recipientAccountId, BigDecimal amountTransfer, String transferStatus, String transferType) {
+    public Transfer(int transferId, int senderAccountId, int recipientAccountId, BigDecimal transferAmount, String transferStatus, String transferType) {
         this.transferId = transferId;
         this.senderAccountId = senderAccountId;
         this.recipientAccountId = recipientAccountId;
@@ -50,7 +50,7 @@ public class Transfer {
         return transferAmount;
     }
 
-    public void setTransferAmount(BigDecimal amountTransfer) {
+    public void setTransferAmount(BigDecimal transferAmount) {
         this.transferAmount = transferAmount;
     }
 

@@ -4,7 +4,6 @@ import com.techelevator.tenmo.dao.interfaces.TenmoAccountDao;
 import com.techelevator.tenmo.dao.interfaces.UsdAccountDao;
 import com.techelevator.tenmo.dao.interfaces.UserDao;
 import com.techelevator.tenmo.exception.DaoException;
-import com.techelevator.tenmo.model.TenmoAccount;
 import com.techelevator.tenmo.model.UsdAccount;
 import com.techelevator.tenmo.model.User;
 import org.springframework.http.HttpStatus;
@@ -59,7 +58,7 @@ public class UserController {
             }
             int userId = user.getId();
             UsdAccount usdAccount = usdAccountDao.pullAccountInformation(userId);
-            balance = usdAccount.getUsdBucksBalance();
+            balance = usdAccount.getUsdBalance();
         } catch (DaoException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DAO error - " + e.getMessage());
         }
