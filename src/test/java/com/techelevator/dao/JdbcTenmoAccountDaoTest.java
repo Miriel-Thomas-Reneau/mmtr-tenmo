@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,18 +20,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
-@JdbcTest
-@ContextConfiguration(classes = TestingDatabaseConfig.class)
-class JdbcTenmoAccountDaoTest {
+//@JdbcTest
+//@ContextConfiguration(classes = TestingDatabaseConfig.class)
+//@SpringBootTest(classes = TestingDatabaseConfig.class)
+class JdbcTenmoAccountDaoTest extends BaseDaoTest {
 
-    @Autowired
+
     private JdbcTemplate jdbcTemplate;
 
     private JdbcTenmoAccountDao dao;
 
     @BeforeEach
     void setUp() {
-        // Initialize the DAO with the JdbcTemplate
+        jdbcTemplate = new JdbcTemplate(dataSource);
         dao = new JdbcTenmoAccountDao(jdbcTemplate);
     }
 
@@ -38,8 +40,7 @@ class JdbcTenmoAccountDaoTest {
     void createTenmoAccount_createsAccount_whenUserIsValid() {
         // Given
         int userId = 10; // Add a new user (non-admin)
-        jdbcTemplate.update("INSERT INTO tenmo_user (user_id, username, password_hash, role) VALUES (?, ?, ?, ?)",
-                userId, "testuser10", "dummyhash", "ROLE_USER");
+        jdbcTemplate.update("into );
 
         // When
         TenmoAccount account = dao.createTenmoAccount(userId);

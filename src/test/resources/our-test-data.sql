@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 DROP TABLE IF EXISTS transfer, USD_account, tenmo_account, tenmo_user CASCADE;
 
 CREATE TABLE tenmo_user (
@@ -45,22 +47,22 @@ CREATE TABLE transfer (
 	CONSTRAINT chk_transfer_type CHECK (transfer_type IN ('Sending', 'Request'))
 );
 
-CREATE OR REPLACE FUNCTION block_admin_accounts()
-RETURNS TRIGGER AS $$
-BEGIN
-	IF EXISTS (
-		SELECT 1 FROM tenmo_user WHERE user_id = NEW.user_id AND role = 'ROLE_ADMIN'
-	) THEN
-		RAISE EXCEPTION 'Admins are not allowed to have Tenmo accounts.';
-	END IF;
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_no_admin_accounts
-BEFORE INSERT ON tenmo_account
-FOR EACH ROW
-EXECUTE FUNCTION block_admin_accounts();
+--CREATE OR REPLACE FUNCTION block_admin_accounts()
+--RETURNS TRIGGER AS $$
+--BEGIN
+--	IF EXISTS (
+--		SELECT 1 FROM tenmo_user WHERE user_id = NEW.user_id AND role = 'ROLE_ADMIN'
+--	) THEN
+--		RAISE EXCEPTION 'Admins are not allowed to have Tenmo accounts.';
+--	END IF;
+--	RETURN NEW;
+--END;
+--$$ LANGUAGE plpgsql;
+--
+--CREATE TRIGGER trg_no_admin_accounts
+--BEFORE INSERT ON tenmo_account
+--FOR EACH ROW
+--EXECUTE FUNCTION block_admin_accounts();
 
 INSERT INTO tenmo_user (username, password_hash, role)
 VALUES
@@ -105,3 +107,5 @@ VALUES
 	(3, 1, 50.00, 'Approved', 'Sending'),
 	(3, 1, 85.00, 'Pending', 'Request'),
 	(1, 6, 100.00, 'Pending', 'Request');
+
+	COMMIT TRANSACTION;
