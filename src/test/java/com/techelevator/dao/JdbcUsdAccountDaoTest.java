@@ -27,7 +27,13 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
 
     @Test
-    void receiveFunds() {
+    void receiveFunds_Give50ToAcct1Return50InAccount() {
+        BigDecimal expected = BigDecimal.valueOf(50);
+        int acct = 1;
+
+        BigDecimal actual = dao.receiveFunds(expected,acct);
+
+        assertEquals(0,actual.compareTo(expected));
     }
 
     @Test
