@@ -44,7 +44,7 @@ public class TransferController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(path = "/transfer")
+    @GetMapping(path = "/transfers")
     public List<Transfer> getTransfersByUser(
             @RequestParam(name = "status", defaultValue = "") String transferStatus,
             Principal principal) {
@@ -79,6 +79,7 @@ public class TransferController {
     public Transfer getTransfer(@PathVariable(name = "transfer_id") int transferId,
                                 Principal principal) {
         Transfer transfer = null;
+        TenmoAccount tenmoAccount = getTenmoAccountByUsername(principal.getName());
         try {
             boolean canSeeTransfer;
             String username = principal.getName();
@@ -88,8 +89,8 @@ public class TransferController {
             }
             int userId = user.getId();
             transfer = transferDao.getTransferById(transferId);
-            canSeeTransfer = user.getRole().equals("ROLE_ADMIN") || transfer.getSenderAccountId() == userId
-                    || transfer.getRecipientAccountId() == userId;
+            canSeeTransfer = user.getRole().equals("ROLE_ADMIN") || transfer.getSenderAccountId() == tenmoAccount.getTeAccountId()
+                    || transfer.getRecipientAccountId() == tenmoAccount.getTeAccountId();
             if (!canSeeTransfer) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                         "Unauthorized to access transfer id " + transferId);
