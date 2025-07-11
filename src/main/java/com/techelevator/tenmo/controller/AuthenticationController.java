@@ -83,7 +83,7 @@ public class AuthenticationController {
                 TenmoAccount newTenmoAccount = tenmoAccountDao.createTenmoAccount(user.getId());
                 UsdAccount newUsdAccount = new UsdAccount();
                 newUsdAccount.setTenmoAccountId(newTenmoAccount.getTeAccountId());
-                newUsdAccount.setUsdBucksBalance(BigDecimal.ZERO);
+                newUsdAccount.setUsdBalance(BigDecimal.ZERO);
                 newUsdAccount.setUser_id(user.getId());
                 usdAccountDao.createUsdAccount(newUsdAccount);
             }

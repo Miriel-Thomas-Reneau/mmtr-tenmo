@@ -148,13 +148,14 @@ public class TransferController {
         int userId = user.getId();
         TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(userId);
         transfer.setSenderAccountId(tenmoAccount.getTeAccountId());
-        transfer.setTransferType("Sending");
         transfer.setTransferStatus("Approved");
+        transfer.setTransferType("Sending");
         Transfer newTransfer = null;
         try {
             newTransfer = transferDao.createTransfer(transfer);
 
         } catch (DaoException e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
         return newTransfer;
