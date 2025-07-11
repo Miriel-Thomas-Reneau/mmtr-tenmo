@@ -67,7 +67,7 @@ public class JdbcUsdAccountDao implements UsdAccountDao {
             SqlRowSet result = jdbcTemplate.queryForRowSet(insertUsdAccountSql, usdAccountId);
             
             if (result.next()) {
-                balanceAmount = (BigDecimal) result;
+                balanceAmount = result.getBigDecimal("usd_balance");
             }
         }catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
