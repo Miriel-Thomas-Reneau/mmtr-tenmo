@@ -24,9 +24,9 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
     @Test
     void createUsdAccount() {
-        int userId = 8;
+        int userId = 10;
         BigDecimal bal = BigDecimal.valueOf(17);
-        int tenmoId = 6;
+        int tenmoId = 8;
         UsdAccount expected = new UsdAccount(tenmoId,bal,userId);
 
         UsdAccount actual = dao.createUsdAccount(expected);
@@ -47,6 +47,16 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
 
     @Test
+    void receiveFunds_GiveAcct1000ReturnNull () {
+        int acct = 1000;
+        BigDecimal enter = BigDecimal.valueOf(10);
+
+        BigDecimal actual = dao.receiveFunds(enter,acct);
+
+        assertNull(actual);
+    }
+
+    @Test
     void getUsdAccountBalance_GiveAcct1Return0() {
         BigDecimal expected = BigDecimal.valueOf(0);
         int acctId = 1;
@@ -55,6 +65,15 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
 
         assertNotNull(actual);
         assertEquals(0,actual.compareTo(expected));
+    }
+
+    @Test
+    void getUsdAccountBalance_GiveAcct1000ReturnNull() {
+        int acctId = 1000;
+
+        BigDecimal actual = dao.getUsdAccountBalance(acctId);
+
+        assertNull(actual);
     }
 
     @Test
@@ -70,5 +89,14 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
         assertEquals(expected.getUser_id(),actual.getUser_id());
         assertEquals(expected.getUsdAccountId(),actual.getUsdAccountId());
         assertEquals(0,actual.getUsdBalance().compareTo(expected.getUsdBalance()));
+    }
+
+    @Test
+    void pullAccountInformation_GiveUser1000ReturnNull () {
+        int userId = 1000;
+
+        UsdAccount actual = dao.pullAccountInformation(userId);
+
+        assertNull(actual);
     }
 }
