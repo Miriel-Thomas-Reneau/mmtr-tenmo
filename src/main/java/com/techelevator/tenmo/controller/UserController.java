@@ -4,11 +4,13 @@ import com.techelevator.tenmo.dao.interfaces.TenmoAccountDao;
 import com.techelevator.tenmo.dao.interfaces.UsdAccountDao;
 import com.techelevator.tenmo.dao.interfaces.UserDao;
 import com.techelevator.tenmo.exception.DaoException;
+import com.techelevator.tenmo.model.TenmoAccount;
 import com.techelevator.tenmo.model.UsdAccount;
 import com.techelevator.tenmo.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,10 +29,9 @@ public class UserController {
         this.usdAccountDao = usdAccountDao;
     }
 
-    //TODO fix this to account for admin consuming this endpoint
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(path = "/balance/tenmo")
-    public BigDecimal getTenmoAccountBalance(Principal principal) {
+    @GetMapping(path = "/tenmo/balance/{tenmoAcctId}")
+    public BigDecimal getTenmoAccountBalance(@PathVariable int tenmoAcctId, Principal principal) {
         BigDecimal balance = null;
         String username = principal.getName();
         try {
@@ -39,7 +40,16 @@ public class UserController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User " + username + " does not exist");
             }
             int userId = user.getId();
-            balance = tenmoAccountDao.getBalanceByUserId(userId);
+            TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(userId);
+            // If user is ROLE_ADMIN, then they're authorized to view anyone's balance.
+            // Else (if user is ROLE_USER), then they can only see their own balance.
+            boolean isAuthorized = user.getRole().equals("ROLE_ADMIN")
+                    || (tenmoAccount != null && tenmoAccount.getTeAccountId() == tenmoAcctId);
+            if (isAuthorized) {
+                balance = tenmoAccountDao.getBalanceByUserId(userId);
+            } else {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot view balance for TenmoAccount " + tenmoAcctId + ": forbidden");
+            }
         } catch (DaoException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "DAO error - " + e.getMessage());
         }
@@ -47,7 +57,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(path = "/balance/usd")
+    @GetMapping(path = "/usd/balance")
     public BigDecimal getUsdAccountBalance(Principal principal) {
         BigDecimal balance = null;
         String username = principal.getName();
