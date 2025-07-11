@@ -157,6 +157,7 @@ public class JdbcTenmoAccountDao implements TenmoAccountDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
+
     }
 
     public TenmoAccount mapRowToTenmoAccount(SqlRowSet results) {
