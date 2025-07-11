@@ -1,5 +1,6 @@
-package com.techelevator.tenmo.services;
+package com.techelevator.services;
 
+import com.techelevator.tenmo.services.ConversionService;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 
