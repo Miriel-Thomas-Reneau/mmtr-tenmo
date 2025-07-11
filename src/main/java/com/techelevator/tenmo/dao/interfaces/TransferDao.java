@@ -17,7 +17,7 @@ public interface TransferDao {
 
     List<Transfer> getTransfersByStatus(String transferStatus);
 
-    List<Transfer> getTransfersByStatusAndUserId (String transferStatus, String userId);
+    List<Transfer> getTransfersByStatusAndUserId (String transferStatus, int tenmoAccountId);
 
     Transfer createTransfer(Transfer transfer);
 
