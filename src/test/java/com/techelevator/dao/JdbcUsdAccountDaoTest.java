@@ -24,6 +24,16 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
     @Test
     void createUsdAccount() {
+        int userId = 8;
+        BigDecimal bal = BigDecimal.valueOf(17);
+        int tenmoId = 6;
+        UsdAccount expected = new UsdAccount(tenmoId,bal,userId);
+
+        UsdAccount actual = dao.createUsdAccount(expected);
+
+        assertEquals(expected.getUser_id(),actual.getUser_id());
+        assertEquals(expected.getTenmoAccountId(),actual.getUser_id());
+        assertEquals(0,actual.getUsdBalance().compareTo(expected.getUsdBalance()));
     }
 
     @Test

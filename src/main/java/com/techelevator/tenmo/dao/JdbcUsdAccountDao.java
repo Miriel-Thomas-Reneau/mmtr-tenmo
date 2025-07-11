@@ -32,7 +32,7 @@ public class JdbcUsdAccountDao implements UsdAccountDao {
                 "VALUES (?, ?, ?) " +
                 "Returning USD_account_id";
         try {
-            Integer usdAccountId = jdbcTemplate.queryForObject(insertUsdAccountSql, int.class,
+            int usdAccountId = jdbcTemplate.queryForObject(insertUsdAccountSql, int.class,
                     newUsdAccount.getTenmoAccountId(), newUsdAccount.getUsdBalance(), newUsdAccount.getUser_id());
             newUsdAccount.setUsdAccountId(usdAccountId);
         } catch (CannotGetJdbcConnectionException e) {
