@@ -28,10 +28,10 @@ public class ConversionController {
         this.conversionService = conversionService;
 
     }
-
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PutMapping(path = "/convert")
-    public BigDecimal conversion ("EUR", "USD",)
-
+//
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PutMapping(path = "/convert")
+//    //public BigDecimal conversion ("EUR", "USD",)
+//
 
 }

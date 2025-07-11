@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class SendingTransferDto {
-    @NotBlank(message = "Sender username cannot be blank")
+    @NotBlank(message = "Recipient username cannot be blank")
     @JsonProperty("recipient_username")
     private String recipientUsername;
     @Positive(message = "Transfer amount must be greater than zero")
