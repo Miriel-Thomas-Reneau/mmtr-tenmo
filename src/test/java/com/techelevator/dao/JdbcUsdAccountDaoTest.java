@@ -2,6 +2,7 @@ package com.techelevator.dao;
 
 import com.techelevator.tenmo.dao.JdbcTenmoAccountDao;
 import com.techelevator.tenmo.dao.JdbcUsdAccountDao;
+import com.techelevator.tenmo.model.UsdAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,10 +31,10 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
 
     @Test
-    void getUsdAccountBalance() {
+    void getUsdAccountBalance_GiveAcct1Return0() {
         BigDecimal expected = BigDecimal.valueOf(0);
         int acctId = 1;
-        
+
         BigDecimal actual = dao.getUsdAccountBalance(acctId);
 
         assertNotNull(actual);
@@ -41,6 +42,17 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
 
     @Test
-    void pullAccountInformation() {
+    void pullAccountInformation_GiverUser1ReturnAcct1() {
+        int userId = 1;
+        BigDecimal bal = BigDecimal.valueOf(0);
+        UsdAccount expected = new UsdAccount(1,1,bal,userId);
+
+        UsdAccount actual = dao.pullAccountInformation(userId);
+
+        assertNotNull(actual);
+        assertEquals(expected.getTenmoAccountId(),actual.getTenmoAccountId());
+        assertEquals(expected.getUser_id(),actual.getUser_id());
+        assertEquals(expected.getUsdAccountId(),actual.getUsdAccountId());
+        assertEquals(0,actual.getUsdBalance().compareTo(expected.getUsdBalance()));
     }
 }
