@@ -66,7 +66,7 @@ CREATE TABLE transfer (
 
 INSERT INTO tenmo_user (username, password_hash, role)
 VALUES
-	('user1', '$2a$10$hash', 'ROLE_USER'),
+	('user1', 'user1', 'ROLE_USER'),
 	('user2', '$2a$10$hash', 'ROLE_USER'),
 	('user3', '$2a$10$hash', 'ROLE_USER'),
 	('user4', '$2a$10$hash', 'ROLE_USER'),
@@ -108,4 +108,4 @@ VALUES
 	(3, 1, 85.00, 'Pending', 'Request'),
 	(1, 6, 100.00, 'Pending', 'Request');
 
-	COMMIT TRANSACTION;
+COMMIT TRANSACTION;
