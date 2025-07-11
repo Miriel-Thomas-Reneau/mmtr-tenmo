@@ -58,7 +58,7 @@ public class TransferController {
                     transfers = transferDao.getTransfersBySenderAcct(tenmoAccountId);
                     transfers.addAll(transferDao.getTransfersByRecipientAcct(tenmoAccountId));
                 } else {
-                    // TODO need transferDao methods to get transfers by both tenmoAccountId and status
+                    transfers = transferDao.getTransfersByStatusAndUserId(transferStatus, tenmoAccountId);
                 }
             }
         } catch (DaoException e) {

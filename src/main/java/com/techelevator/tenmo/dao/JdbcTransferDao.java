@@ -134,7 +134,8 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public List<Transfer> getTransfersByStatusAndUserId(String userId, String transferStatus) {List<Transfer> transfers = new ArrayList<>();
+    public List<Transfer> getTransfersByStatusAndUserId(String transferStatus, int tenmoAccountId) {
+        List<Transfer> transfers = new ArrayList<>();
         List<Transfer> transfersByStatusUserId = new ArrayList<>();
 
         String sql = "SELECT * " +
@@ -142,7 +143,7 @@ public class JdbcTransferDao implements TransferDao {
                 "WHERE (sender_account_id = ? OR recipient_account_id = ?) AND transfer_status = ? " +
                 "ORDER BY sender_account_id, recipient_account_id, transfer_id;";
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId, transferStatus);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, tenmoAccountId, tenmoAccountId, transferStatus);
             while (results.next()) {
                 Transfer transfer = mapRowToTransfer(results);
                 transfers.add(transfer);
