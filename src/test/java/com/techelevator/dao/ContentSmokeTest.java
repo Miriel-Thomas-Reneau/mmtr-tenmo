@@ -8,7 +8,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 //@SpringBootTest(classes = TestingDatabaseConfig.class)
 public class ContentSmokeTest {//} extends BaseDaoTest{
-    //@Test
+    @Test
     public void contextLoads() {
         System.out.println();
     }
