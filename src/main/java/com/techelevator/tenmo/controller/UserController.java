@@ -41,12 +41,14 @@ public class UserController {
             }
             int userId = user.getId();
             TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(userId);
+            if (tenmoAccount == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account " + tenmoAcctId + " does not exist");
+            }
             // If user is ROLE_ADMIN, then they're authorized to view anyone's balance.
             // Else (if user is ROLE_USER), then they can only see their own balance.
-            boolean isAuthorized = user.getRole().equals("ROLE_ADMIN")
-                    || (tenmoAccount != null && tenmoAccount.getTeAccountId() == tenmoAcctId);
+            boolean isAuthorized = user.getRole().equals("ROLE_ADMIN") || tenmoAccount.getTeAccountId() == tenmoAcctId;
             if (isAuthorized) {
-                balance = tenmoAccountDao.getBalanceByUserId(userId);
+                balance = tenmoAccountDao.getBalanceByTenmoAccountId(tenmoAcctId);
             } else {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot view balance for TenmoAccount " + tenmoAcctId + ": forbidden");
             }
