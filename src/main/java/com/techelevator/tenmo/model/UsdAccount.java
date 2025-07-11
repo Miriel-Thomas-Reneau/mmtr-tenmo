@@ -17,6 +17,11 @@ public class UsdAccount {
         this.usdBalance = usdBalance;
         this.user_id = user_id;
     }
+    public UsdAccount( int teAccountId, BigDecimal usdBalance, int user_id) {
+        this.tenmoAccountId = teAccountId;
+        this.usdBalance = usdBalance;
+        this.user_id = user_id;
+    }
 
     public int getUsdAccountId() {
         return usdAccountId;

@@ -2,6 +2,7 @@ package com.techelevator.dao;
 
 import com.techelevator.tenmo.dao.JdbcTenmoAccountDao;
 import com.techelevator.tenmo.dao.JdbcUsdAccountDao;
+import com.techelevator.tenmo.model.UsdAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,17 +24,33 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
     @Test
     void createUsdAccount() {
+        int userId = 8;
+        BigDecimal bal = BigDecimal.valueOf(17);
+        int tenmoId = 6;
+        UsdAccount expected = new UsdAccount(tenmoId,bal,userId);
+
+        UsdAccount actual = dao.createUsdAccount(expected);
+
+        assertEquals(expected.getUser_id(),actual.getUser_id());
+        assertEquals(expected.getTenmoAccountId(),actual.getUser_id());
+        assertEquals(0,actual.getUsdBalance().compareTo(expected.getUsdBalance()));
     }
 
     @Test
-    void receiveFunds() {
+    void receiveFunds_Give50ToAcct1Return50InAccount() {
+        BigDecimal expected = BigDecimal.valueOf(50);
+        int acct = 1;
+
+        BigDecimal actual = dao.receiveFunds(expected,acct);
+
+        assertEquals(0,actual.compareTo(expected));
     }
 
     @Test
-    void getUsdAccountBalance() {
+    void getUsdAccountBalance_GiveAcct1Return0() {
         BigDecimal expected = BigDecimal.valueOf(0);
         int acctId = 1;
-        
+
         BigDecimal actual = dao.getUsdAccountBalance(acctId);
 
         assertNotNull(actual);
@@ -41,6 +58,17 @@ class JdbcUsdAccountDaoTest extends BaseDaoTest{
     }
 
     @Test
-    void pullAccountInformation() {
+    void pullAccountInformation_GiverUser1ReturnAcct1() {
+        int userId = 1;
+        BigDecimal bal = BigDecimal.valueOf(0);
+        UsdAccount expected = new UsdAccount(1,1,bal,userId);
+
+        UsdAccount actual = dao.pullAccountInformation(userId);
+
+        assertNotNull(actual);
+        assertEquals(expected.getTenmoAccountId(),actual.getTenmoAccountId());
+        assertEquals(expected.getUser_id(),actual.getUser_id());
+        assertEquals(expected.getUsdAccountId(),actual.getUsdAccountId());
+        assertEquals(0,actual.getUsdBalance().compareTo(expected.getUsdBalance()));
     }
 }
