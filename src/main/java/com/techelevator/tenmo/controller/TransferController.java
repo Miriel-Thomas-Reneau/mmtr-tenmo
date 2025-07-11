@@ -7,6 +7,7 @@ import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.TenmoAccount;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.services.ConversionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,10 +31,12 @@ public class TransferController {
     private TransferDao transferDao;
     private TenmoAccountDao tenmoAccountDao;
 
-    public TransferController(UserDao userDao, TransferDao transferDao, TenmoAccountDao tenmoAccountDao) {
+
+    public TransferController(UserDao userDao, TransferDao transferDao, TenmoAccountDao tenmoAccountDao, ConversionService conversionService) {
         this.userDao = userDao;
         this.transferDao = transferDao;
         this.tenmoAccountDao = tenmoAccountDao;
+
     }
 
     @PreAuthorize("isAuthenticated()")
