@@ -102,6 +102,9 @@ public class TransferController {
         } catch (DaoException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+        if (transfer == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No transfer found with id " + transferId);
+        }
         return transfer;
     }
 
