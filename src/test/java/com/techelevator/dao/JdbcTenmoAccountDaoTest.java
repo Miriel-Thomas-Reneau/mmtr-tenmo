@@ -21,6 +21,7 @@ class JdbcTenmoAccountDaoTest extends BaseDaoTest {
 
     private JdbcTenmoAccountDao dao;
 
+
     @BeforeEach
     void setUp() {
         jdbcTemplate = new JdbcTemplate(dataSource);
