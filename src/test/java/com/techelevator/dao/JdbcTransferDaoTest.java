@@ -253,7 +253,7 @@ class JdbcTransferDaoTest extends BaseDaoTest{
     @Test
     void updateTransfer() {
         JdbcTenmoAccountDao jdbcTenmoAccountDao = new JdbcTenmoAccountDao(jdbcTemplate);
-        Transfer newTransfer = new Transfer(4,6,3,BigDecimal.valueOf(15.01),"Pending","Sending");
+        Transfer newTransfer = new Transfer(4,6,3,BigDecimal.valueOf(15.01),"Approved","Sending");
         BigDecimal sendingOriginal = jdbcTenmoAccountDao.getBalanceByTenmoAccountId(6);
         BigDecimal sendingExpected = sendingOriginal.subtract(BigDecimal.valueOf(15.01));
         BigDecimal receivingOriginal = jdbcTenmoAccountDao.getBalanceByTenmoAccountId(3);
