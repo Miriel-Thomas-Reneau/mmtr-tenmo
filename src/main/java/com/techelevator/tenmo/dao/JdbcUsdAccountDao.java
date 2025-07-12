@@ -91,6 +91,31 @@ public class JdbcUsdAccountDao implements UsdAccountDao {
         return usdAccount;
     }
 
+    @Override
+    public BigDecimal receiveConvertedFunds(int usdAccountId, BigDecimal usd) {
+
+        BigDecimal currentUSDBalance = getUsdAccountBalance(usdAccountId);
+        BigDecimal updatedUSDBalance = null;
+        BigDecimal amountToReceive = usd;
+        BigDecimal newBalance = currentUSDBalance.add(amountToReceive);
+            String sql = "UPDATE usd_account " +
+                    "SET usd_balance = ? " +
+                    "WHERE usd_account_id = ?;";
+
+
+        try {
+
+
+             updatedUSDBalance = jdbcTemplate.update(sql, newBalance, usdAccountId);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+
+
+        return updatedUSDBalance;
+    }
+
+
     private UsdAccount mapRowToUsdAccount(SqlRowSet rs) {
         UsdAccount usdAccount = new UsdAccount();
         usdAccount.setUsdAccountId(rs.getInt("USD_account_id"));
