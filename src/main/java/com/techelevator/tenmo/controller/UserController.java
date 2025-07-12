@@ -40,10 +40,10 @@ public class UserController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User " + username + " does not exist");
             }
             int userId = user.getId();
-            TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(userId);
-//            if (tenmoAccount == null) {
-//              //  throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account " + tenmoAcctId + " does not exist");
-//           // }
+            TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByTenmoAccountId(tenmoAcctId);
+            if (tenmoAccount == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account " + tenmoAcctId + " does not exist");
+            }
             // If user is ROLE_ADMIN, then they're authorized to view anyone's balance.
             // Else (if user is ROLE_USER), then they can only see their own balance.
             boolean isAuthorized = user.getRole().equals("ROLE_ADMIN") || tenmoAccount.getTeAccountId() == tenmoAcctId;
