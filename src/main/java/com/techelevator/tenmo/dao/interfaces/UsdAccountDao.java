@@ -12,4 +12,7 @@ public interface UsdAccountDao {
     BigDecimal getUsdAccountBalance(int usdAccountId);
 
     UsdAccount pullAccountInformation(int user_id);
-}
+
+    BigDecimal receiveConvertedFunds(int usdAccountId, BigDecimal usd);
+    }
+

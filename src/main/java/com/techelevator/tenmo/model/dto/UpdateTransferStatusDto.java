@@ -6,6 +6,8 @@ public class UpdateTransferStatusDto {
     @Pattern(regexp = "Approved|Rejected", message = "New status must be approved or rejected")
     private String status;
 
+    public UpdateTransferStatusDto() {};
+
     public UpdateTransferStatusDto(String status) {
         this.status = status;
     }
