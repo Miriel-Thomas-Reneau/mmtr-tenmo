@@ -136,7 +136,6 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public List<Transfer> getTransfersByStatusAndUserId(String transferStatus, int tenmoAccountId) {
         List<Transfer> transfers = new ArrayList<>();
-        List<Transfer> transfersByStatusUserId = new ArrayList<>();
 
         String sql = "SELECT * " +
                 "FROM transfer " +
@@ -152,13 +151,14 @@ public class JdbcTransferDao implements TransferDao {
             throw new DaoException("Unable to connect to server or database", e);
         }
 
-        return transfersByStatusUserId;
+        return transfers;
     }
 
     @Override
     public Transfer createTransfer(Transfer transfer) {
 
         Transfer newTransfer = null;
+        JdbcTenmoAccountDao jdbcTenmoAccountDao = new JdbcTenmoAccountDao(jdbcTemplate);
 
         String createTransferSql = "INSERT INTO transfer " +
                 "(sender_account_id, recipient_account_id, transfer_amount, transfer_status, transfer_type) " +
@@ -171,7 +171,7 @@ public class JdbcTransferDao implements TransferDao {
                 newTransfer = getTransferById(newTransferId);
 
                 if (newTransfer.getTransferStatus().equals("Approved")) {
-                    tenmoAccountDao.updateBalances(newTransfer);
+                    jdbcTenmoAccountDao.updateBalances(newTransfer);
                 }
 
         } catch (CannotGetJdbcConnectionException e) {
@@ -187,6 +187,8 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer updateTransfer(Transfer transfer) {
         Transfer updatedTransfer = null;
         int transferId = transfer.getTransferId();
+
+        JdbcTenmoAccountDao jdbcTenmoAccountDao = new JdbcTenmoAccountDao(jdbcTemplate);
 
         String transferExistsSql = "SELECT COUNT (*) " +
                 "FROM transfer " +
@@ -214,7 +216,7 @@ public class JdbcTransferDao implements TransferDao {
             updatedTransfer = getTransferById(transfer.getTransferId());
 
             if (updatedTransfer.getTransferStatus().equals("Approved")) {
-                tenmoAccountDao.updateBalances(updatedTransfer);
+                jdbcTenmoAccountDao.updateBalances(updatedTransfer);
             }
 
         } catch (CannotGetJdbcConnectionException e) {

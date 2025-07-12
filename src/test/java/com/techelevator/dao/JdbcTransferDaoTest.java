@@ -20,6 +20,7 @@ class JdbcTransferDaoTest extends BaseDaoTest{
 
     private JdbcTemplate jdbcTemplate;
     private TenmoAccountDao tenmoDao;
+    private JdbcTenmoAccountDao jdbcTenmoAccountDao;
     private JdbcTransferDao dao;
 
     @BeforeEach
@@ -211,11 +212,42 @@ class JdbcTransferDaoTest extends BaseDaoTest{
     }
 
     @Test
-    void getTransfersByStatusAndUserId() {
+    void getTransfersByStatusAndUserId_GiveApprovedAnd1Return2CorrectListComponents () {
+        List<Transfer> expected = new ArrayList<>();
+        Transfer transfer1 = new Transfer(1,1,2,BigDecimal.valueOf(150.01),"Approved","Sending");
+        Transfer transfer6 = new Transfer(6,3,1,BigDecimal.valueOf(50.01),"Approved","Sending");
+        expected.add(transfer1);
+        expected.add(transfer6);
+        int tenmoId = 1;
+        String transferStatus = "Approved";
+
+        List<Transfer> actual = dao.getTransfersByStatusAndUserId(transferStatus,tenmoId);
+
+        assertEquals(expected.size(),actual.size());
+
+        for (int i = 0 ; i < expected.size() ; i++) {
+            assertEquals(expected.get(i).getTransferType(),actual.get(i).getTransferType());
+            assertEquals(expected.get(i).getTransferAmount(),actual.get(i).getTransferAmount());
+            assertEquals(expected.get(i).getTransferId(),actual.get(i).getTransferId());
+            assertEquals(expected.get(i).getSenderAccountId(),actual.get(i).getSenderAccountId());
+            assertEquals(expected.get(i).getRecipientAccountId(),actual.get(i).getRecipientAccountId());
+            assertEquals(expected.get(i).getTransferStatus(),actual.get(i).getTransferStatus());
+        }
     }
 
     @Test
-    void createTransfer() {
+    void createTransfer_GiveTransferReturnCorrectTransfer () {
+        Transfer expected = new Transfer(9,2,1,BigDecimal.valueOf(150.01),"Approved","Sending");
+
+        Transfer actual = dao.createTransfer(expected);
+
+        assertNotNull(actual);
+        assertEquals(expected.getTransferStatus(),actual.getTransferStatus());
+        assertEquals(expected.getRecipientAccountId(),actual.getRecipientAccountId());
+        assertEquals(expected.getSenderAccountId(),actual.getSenderAccountId());
+        assertEquals(expected.getTransferId(),actual.getTransferId());
+        assertEquals(0,actual.getTransferAmount().compareTo(expected.getTransferAmount()));
+        assertEquals(expected.getTransferType(),actual.getTransferType());
     }
 
     @Test
