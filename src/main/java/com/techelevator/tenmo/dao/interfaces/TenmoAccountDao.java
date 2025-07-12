@@ -23,4 +23,7 @@ public interface TenmoAccountDao {
     void updateBalances(Transfer transfer);
         //subtract transfer amount from sender account
         //add transfer amount to recipient account
+
+    void removeFunds(int tenmoAccountId, BigDecimal moneyToRemove);
+        //subtract moneyToRemove from tenmoAccount
 }
