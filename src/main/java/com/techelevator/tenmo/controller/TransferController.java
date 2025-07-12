@@ -56,7 +56,11 @@ public class TransferController {
         }
         try {
             if (user.getRole().equals("ROLE_ADMIN")) {
-                transfers = transferDao.getAllTransfers();
+                if (transferStatus.isEmpty()) {
+                    transfers = transferDao.getAllTransfers();
+                } else {
+                    transfers = transferDao.getTransfersByStatus(transferStatus);
+                }
             }
             else {
                 TenmoAccount tenmoAccount = tenmoAccountDao.getTenmoAccountByUserId(user.getId());
