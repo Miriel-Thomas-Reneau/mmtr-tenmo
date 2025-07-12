@@ -99,13 +99,13 @@ VALUES
 
 INSERT INTO transfer (sender_account_id, recipient_account_id, transfer_amount, transfer_status, transfer_type)
 VALUES
-	(1, 2, 150.00, 'Approved', 'Sending'),
-	(5, 3, 75.00, 'Pending', 'Request'),
-	(4, 7, 100.00, 'Approved', 'Request'),
-	(6, 3, 15.00, 'Pending', 'Sending'),
-	(2, 1, 100.00, 'Rejected', 'Request'),
-	(3, 1, 50.00, 'Approved', 'Sending'),
-	(3, 1, 85.00, 'Pending', 'Request'),
-	(1, 6, 100.00, 'Pending', 'Request');
+	(1, 2, 150.01, 'Approved', 'Sending'),
+	(5, 3, 75.01, 'Pending', 'Request'),
+	(4, 7, 100.01, 'Approved', 'Request'),
+	(6, 3, 15.01, 'Pending', 'Sending'),
+	(2, 1, 100.01, 'Rejected', 'Request'),
+	(3, 1, 50.01, 'Approved', 'Sending'),
+	(3, 1, 85.01, 'Pending', 'Request'),
+	(1, 6, 100.01, 'Pending', 'Request');
 
 COMMIT TRANSACTION;
