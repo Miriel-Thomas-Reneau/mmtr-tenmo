@@ -152,8 +152,8 @@ class JdbcTenmoAccountDaoTest extends BaseDaoTest {
         int senderAccount = 1;
         int recievingAcct = 2;
         BigDecimal sending = BigDecimal.valueOf(300);
-        BigDecimal newAmountForSending = BigDecimal.valueOf(300);
-        BigDecimal newAmountForRecieving = BigDecimal.valueOf(1300);
+        BigDecimal sendingExpected = dao.getBalanceByTenmoAccountId(senderAccount).subtract(sending);
+        BigDecimal receivingExpected = dao.getBalanceByTenmoAccountId(recievingAcct).add(sending);
 
 
         Transfer transfer = new Transfer(senderAccount,recievingAcct,sending,"Approved","Sending");
@@ -162,8 +162,8 @@ class JdbcTenmoAccountDaoTest extends BaseDaoTest {
 
         dao.updateBalances(transfers);
 
-        assertEquals(0,dao.getBalanceByTenmoAccountId(1).compareTo(newAmountForSending));
-        assertEquals(0,dao.getBalanceByTenmoAccountId(2).compareTo(newAmountForRecieving));
+        assertEquals(0,dao.getBalanceByTenmoAccountId(1).compareTo(sendingExpected));
+        assertEquals(0,dao.getBalanceByTenmoAccountId(2).compareTo(receivingExpected));
     }
 
 
