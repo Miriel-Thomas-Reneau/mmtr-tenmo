@@ -130,7 +130,13 @@ public class JdbcTenmoAccountDao implements TenmoAccountDao {
     @Override
     public void updateBalances(Transfer transfer) {
         TenmoAccount senderAccount = getTenmoAccountByTenmoAccountId(transfer.getSenderAccountId());
+        if (senderAccount == null) {
+            throw new DaoException("TenmoAccount with id " + transfer.getSenderAccountId() + " does not exist");
+        }
         TenmoAccount recipientAccount = getTenmoAccountByTenmoAccountId(transfer.getRecipientAccountId());
+        if (recipientAccount == null) {
+            throw new DaoException("TenmoAccount with id " + transfer.getRecipientAccountId() + " does not exist");
+        }
         int senderAccountId = senderAccount.getTeAccountId();
         int recipientAccountId = recipientAccount.getTeAccountId();
         if (senderAccountId == recipientAccountId) {
@@ -159,6 +165,31 @@ public class JdbcTenmoAccountDao implements TenmoAccountDao {
         }
 
     }
+
+    @Override
+    public void removeFunds(int tenmoAccountId, BigDecimal moneyToRemove) {
+        TenmoAccount tenmoAccount = getTenmoAccountByTenmoAccountId(tenmoAccountId);
+        if (tenmoAccount == null) {
+            throw new DaoException("TenmoAccount with id " + tenmoAccountId + " does not exist");
+        }
+        BigDecimal currentBalance = tenmoAccount.getTeBucksBalance();
+        if (moneyToRemove.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DaoException("Unable to remove money: transfer amount is zero or negative");
+        }
+        if (currentBalance.compareTo(moneyToRemove) < 0) {
+            throw new DaoException("Unable to remove money: balance is too low");
+        }
+        BigDecimal newBalance = currentBalance.subtract(moneyToRemove);
+        tenmoAccount.setTeBucksBalance(newBalance);
+        try {
+            updateTenmoAccount(tenmoAccount);
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+    }
+
 
     public TenmoAccount mapRowToTenmoAccount(SqlRowSet results) {
         TenmoAccount tenmoAccount = new TenmoAccount();
