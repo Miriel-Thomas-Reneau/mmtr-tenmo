@@ -152,11 +152,12 @@ class JdbcTenmoAccountDaoTest extends BaseDaoTest {
         int senderAccount = 1;
         int recievingAcct = 2;
         BigDecimal sending = BigDecimal.valueOf(300);
-        BigDecimal sendingExpected = dao.getBalanceByTenmoAccountId(senderAccount).subtract(sending);
-        BigDecimal receivingExpected = dao.getBalanceByTenmoAccountId(recievingAcct).add(sending);
+        BigDecimal sendingOriginal = dao.getBalanceByTenmoAccountId(senderAccount);
+        BigDecimal sendingExpected = sendingOriginal.subtract(sending);
+        BigDecimal receivingOriginal = dao.getBalanceByTenmoAccountId(recievingAcct);
+        BigDecimal receivingExpected = receivingOriginal.add(sending);
 
-
-        Transfer transfer = new Transfer(senderAccount,recievingAcct,sending,"Approved","Sending");
+        Transfer transfer = new Transfer(senderAccount,recievingAcct,sending,"Pending","Sending");
         JdbcTransferDao transferDao = new JdbcTransferDao(jdbcTemplate, dao);
         Transfer transfers = transferDao.createTransfer(transfer);
 
